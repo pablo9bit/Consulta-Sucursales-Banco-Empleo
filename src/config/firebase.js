@@ -2,15 +2,13 @@ import firebase from "firebase";
 
 
 const config = {
-  apiKey: "AIzaSyCC9RWRzdfIoLLNOPx7zL0MIYxDmxit2Vg",
-  authDomain: "consulta-banco-gente.firebaseapp.com",
-  databaseURL: "https://consulta-banco-gente-default-rtdb.firebaseio.com",
-  projectId: "consulta-banco-gente",
-  storageBucket: "consulta-banco-gente.appspot.com",
-  messagingSenderId: "1061846064211",
-  appId: "1:1061846064211:web:1879de64dae5227c4b7aa6",
-  measurementId: "G-QWMEN59VHL"
-
+  apiKey: "AIzaSyA7Jr78t-mib7os9W5aPy_sOOEaOCkIYsE",
+  authDomain: "programas-empleo.firebaseapp.com",
+  databaseURL: "https://programas-empleo-default-rtdb.firebaseio.com",
+  projectId: "programas-empleo",
+  storageBucket: "programas-empleo.appspot.com",
+  messagingSenderId: "377614663048",
+  appId: "1:377614663048:web:8775f9e4b9a3160ac64e3d"
 }; 
 
 

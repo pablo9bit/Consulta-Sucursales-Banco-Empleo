@@ -15,19 +15,19 @@ const FormConsulta = () => {
 
   useEffect(() => {
     const alertar = () => {
-      if (resultado.data === null && resultado.consultado && !loadingLocal ) {
+      if (resultado.data === null && resultado.consultado && !loadingLocal) {
         setAlerta({
           msg: "No se encontraron resultados.",
           class: "danger",
         });
       }
-      if(resultado.data){
-        setAlerta(null)
+      if (resultado.data) {
+        setAlerta(null);
       }
     };
 
     alertar();
-  }, [resultado, loadingLocal]);
+  }, [resultado, loadingLocal, setAlerta]);
 
   const onChange = (e) => {
     LeerForm({
@@ -40,7 +40,7 @@ const FormConsulta = () => {
     e.preventDefault();
     setAlerta(null);
 
-    const recaptchaValue =recaptchaRef.current.getValue();
+    const recaptchaValue = recaptchaRef.current.getValue();
     //console.log(recaptchaValue);
 
     if (recaptchaValue) {
@@ -73,59 +73,41 @@ const FormConsulta = () => {
     ref
       .orderByChild("CUIL")
       .equalTo(micuil)
-      .on(
-        "child_added",
-        (snapshot) => {
-          //console.log("salida", snapshot.val());
+      .on("child_added", (snapshot) => {
+        console.log("salida", snapshot.val());
 
-          let data = null;
-          if (snapshot.val()) {
-            data = snapshot.val();
-          }
-
-          setResultado({ data, consultado: true });
-          if (data === null  ) {
-            setAlerta({
-              msg: "No se encontraron resultados.",
-              class: "danger",
-            });
-          }else{
-            setAlerta(null);
-          }
-          setLoadingLocal(false);
+        let data = null;
+        if (snapshot.val()) {
+          data = snapshot.val();
         }
-      );
-      setLoadingLocal(false);
+
+        setResultado({ data, consultado: true });
+        if (data === null) {
+          setAlerta({
+            msg: "No se encontraron resultados.",
+            class: "danger",
+          });
+        } else {
+          setAlerta(null);
+        }
+        setLoadingLocal(false);
+      });
+    setLoadingLocal(false);
   };
 
-  const Mensaje = () => {
-    let mje = "";
-    if (resultado.data.APTO_CARGA === "True") {
-      mje = "Su solicitud de crédito número de Sticker " + resultado.data.Sticker + " en base a un análisis preliminar, la documentación se encuentra correcta, continúa en proceso de evaluación. Se le notificará vía CIDI cualquier resolución.. Se le notificará via CIDI cualquier resolución"
 
-    } else {
 
-      if (resultado.data.EVALUADO === "True") {
-        mje = "Su solicitud de crédito número de Sticker " + resultado.data.Sticker + " posee las siguientes observaciones: " + resultado.data.PARA_NOTIFICAR + " Si desea puede completar la documentación en <a href='https://tramitesbancodelagente.cba.gov.ar/formulario/ingreso-documentacion-faltante'>https://tramitesbancodelagente.cba.gov.ar/formulario/ingreso-documentacion-faltante</a";
-      } else {
-        mje = "Su solicitud de crédito número de Sticker " + resultado.data.Sticker + " Se encuentra en proceso de control y verificación de la documentación presentada";
-      }
-      //console.log(mje);
-    }
-
-    return mje;
-  }
   return (
     <div>
       <img src="header_banco_gente.png" width="100%" alt="bancodelagente" />
       <br></br>
       <div className="text-center p-1">
-        <b>CONSULTA DE ESTADO SOLICITUD CREDITO LIBRE DISPONIBILIDAD</b>
+        <b>CONSULTA DE SUCURSAL BANCARIA ASIGNADA</b>
       </div>
       <form onSubmit={onSubmit} style={{ margin: "30px" }}>
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <input style={{ width: "400px" }}
-
+          <input
+            style={{ width: "400px" }}
             type="text"
             name="cuil"
             className="form-control"
@@ -143,7 +125,13 @@ const FormConsulta = () => {
         </div>
 
         <div style={{ display: "flex", justifyContent: "center" }}>
-          {loadingLocal ? <div className="m-2"><b>Buscando...</b></div> : ""}
+          {loadingLocal ? (
+            <div className="m-2">
+              <b>Buscando...</b>
+            </div>
+          ) : (
+            ""
+          )}
         </div>
         <br></br>
 
@@ -156,33 +144,35 @@ const FormConsulta = () => {
             onChange={onChange}
           />
         </div>
-
       </form>
       <MostrarAlerta />
 
       {resultado.data ? (
-        <table className="table table-striped row p-3">
-          <tbody>
-            <tr>
-              <th scope="row">CUIT</th>
-              <td>{resultado.data.CUIL}</td>
-            </tr>
-            <tr>
-              <th scope="row">Nombre</th>
-              <td>{resultado.data.Nombres}</td>
-            </tr>
-            <tr>
-              <th scope="row">Apellido</th>
-              <td>{resultado.data.Apellido}</td>
-            </tr>
-            <tr>
-              <th scope="row">Mensaje</th>
-              <td>      
-                <div contentEditable='true' dangerouslySetInnerHTML={{ __html: Mensaje() }}></div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+          <table className="table table-striped row p-3" style={{margin: "auto", width: "500px"}}>
+            <tbody>
+              <tr>
+                <th scope="row">CUIT</th>
+                <td>{resultado.data.CUIL}</td>
+              </tr>
+              <tr>
+                <th scope="row">Nombre</th>
+                <td>{resultado.data.NOMBRE}</td>
+              </tr>
+              <tr>
+                <th scope="row">Apellido</th>
+                <td>{resultado.data.APELLIDO}</td>
+              </tr>
+              <tr>
+                <th scope="row">Sucursal Bancaria</th>
+                <td>
+                  <td>
+                    {resultado.data.BEN_COD_SUC} - {resultado.data.BEN_SUCURSAL}
+                  </td>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
       ) : null}
     </div>
   );
