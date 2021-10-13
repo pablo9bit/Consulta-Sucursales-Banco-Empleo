@@ -74,7 +74,7 @@ const FormConsulta = () => {
       .orderByChild("CUIL")
       .equalTo(micuil)
       .on("child_added", (snapshot) => {
-        console.log("salida", snapshot.val());
+        //console.log("salida", snapshot.val());
 
         let data = null;
         if (snapshot.val()) {
@@ -94,8 +94,6 @@ const FormConsulta = () => {
       });
     setLoadingLocal(false);
   };
-
-
 
   return (
     <div>
@@ -148,31 +146,37 @@ const FormConsulta = () => {
       <MostrarAlerta />
 
       {resultado.data ? (
-          <table className="table table-striped row p-3" style={{margin: "auto", width: "500px"}}>
-            <tbody>
-              <tr>
-                <th scope="row">CUIT</th>
-                <td>{resultado.data.CUIL}</td>
-              </tr>
-              <tr>
-                <th scope="row">Nombre</th>
-                <td>{resultado.data.NOMBRE}</td>
-              </tr>
-              <tr>
-                <th scope="row">Apellido</th>
-                <td>{resultado.data.APELLIDO}</td>
-              </tr>
-              <tr>
-                <th scope="row">Sucursal Bancaria</th>
-                <td>
-                  <td>
+        <table
+          className="table table-striped "
+          style={{ margin: "auto", width: "600px" }}
+        >
+          <tbody>
+            <tr>
+              <th scope="row">CUIT</th>
+              <td>{resultado.data.CUIL}</td>
+            </tr>
+            <tr>
+              <th scope="row">Nombre</th>
+              <td>{resultado.data.NOMBRE}</td>
+            </tr>
+            <tr>
+              <th scope="row">Apellido</th>
+              <td>{resultado.data.APELLIDO}</td>
+            </tr>
+            <tr>
+              <th scope="row">Sucursal Bancaria</th>
+              <td>
+                {!resultado.data.BEN_COD_SUC ? (
+                  "Sucursal No Asignada"
+                ) : (
+                  <>
                     {resultado.data.BEN_COD_SUC} - {resultado.data.BEN_SUCURSAL}
-                  </td>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
+                  </>
+                )}
+              </td>
+            </tr>
+          </tbody>
+        </table>
       ) : null}
     </div>
   );
