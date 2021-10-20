@@ -1,33 +1,16 @@
-import { useState, createRef, useEffect } from "react";
+import { useState, createRef } from "react";
 import firebase from "../config/firebase";
 import ReCAPTCHA from "react-google-recaptcha";
 import useAlerta from "../hooks/useAlerta";
 
 const FormConsulta = () => {
   const [resultado, setResultado] = useState({ data: null, consultado: false });
-  const [setAlerta, MostrarAlerta] = useAlerta(null);
   const [loadingLocal, setLoadingLocal] = useState(null);
-
+  const [setAlerta, MostrarAlerta] = useAlerta(null);
   const [DatosForm, LeerForm] = useState({ cuil: "" });
   const { cuil } = DatosForm;
 
   const recaptchaRef = createRef();
-
-  useEffect(() => {
-    const alertar = () => {
-      if (resultado.data === null && resultado.consultado && !loadingLocal) {
-        setAlerta({
-          msg: "No se encontraron resultados.",
-          class: "danger",
-        });
-      }
-      if (resultado.data) {
-        setAlerta(null);
-      }
-    };
-
-    alertar();
-  }, [resultado, loadingLocal, setAlerta]);
 
   const onChange = (e) => {
     LeerForm({
@@ -39,6 +22,7 @@ const FormConsulta = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     setAlerta(null);
+    setResultado({ data: null, consultado: false });
 
     const recaptchaValue = recaptchaRef.current.getValue();
     //console.log(recaptchaValue);
@@ -62,7 +46,7 @@ const FormConsulta = () => {
   };
 
   const consultar = async (micuil) => {
-    setResultado({ data: null, consultado: true });
+    setResultado({ data: null, consultado: false });
 
     setLoadingLocal(true);
 
@@ -73,25 +57,23 @@ const FormConsulta = () => {
     ref
       .orderByChild("CUIL")
       .equalTo(micuil)
-      .on("child_added", (snapshot) => {
-        //console.log("salida", snapshot.val());
+      .once("value")
+      .then((snapshot) => {
 
-        let data = null;
         if (snapshot.val()) {
-          data = snapshot.val();
-        }
-
-        setResultado({ data, consultado: true });
-        if (data === null) {
+          setAlerta(null);
+          console.log("salida", snapshot.val());
+          const data = snapshot.val();
+          setResultado({ data, consultado: true });
+        } else {
+          console.log("no hay datos");
           setAlerta({
             msg: "No se encontraron resultados.",
             class: "danger",
           });
-        } else {
-          setAlerta(null);
         }
-        setLoadingLocal(false);
       });
+
     setLoadingLocal(false);
   };
 
@@ -116,22 +98,6 @@ const FormConsulta = () => {
           />
         </div>
         <br></br>
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <button className="btn btn-primary" type="submit">
-            consultar
-          </button>
-        </div>
-
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          {loadingLocal ? (
-            <div className="m-2">
-              <b>Buscando...</b>
-            </div>
-          ) : (
-            ""
-          )}
-        </div>
-        <br></br>
 
         <div style={{ display: "flex", justifyContent: "center" }}>
           <ReCAPTCHA
@@ -142,42 +108,46 @@ const FormConsulta = () => {
             onChange={onChange}
           />
         </div>
+        <br></br>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <button className="btn btn-primary" type="submit">
+            consultar
+          </button>
+        </div>
+
       </form>
       <MostrarAlerta />
-
-      {resultado.data ? (
-        <table
-          className="table table-striped "
-          style={{ margin: "auto", width: "600px" }}
-        >
-          <tbody>
-            <tr>
-              <th scope="row">CUIT</th>
-              <td>{resultado.data.CUIL}</td>
-            </tr>
-            <tr>
-              <th scope="row">Nombre</th>
-              <td>{resultado.data.NOMBRE}</td>
-            </tr>
-            <tr>
-              <th scope="row">Apellido</th>
-              <td>{resultado.data.APELLIDO}</td>
-            </tr>
-            <tr>
-              <th scope="row">Sucursal Bancaria</th>
-              <td>
-                {!resultado.data.BEN_COD_SUC ? (
-                  "Sucursal No Asignada"
-                ) : (
-                  <>
-                    {resultado.data.BEN_COD_SUC} - {resultado.data.BEN_SUCURSAL}
-                  </>
-                )}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      ) : null}
+      {resultado.data ? <table
+      className="table table-striped "
+      style={{ margin: "auto", width: "600px" }}
+    >
+      <tbody>
+        <tr>
+          <th scope="row">CUIT</th>
+          <td>{resultado.data.CUIL}</td>
+        </tr>
+        <tr>
+          <th scope="row">Nombre</th>
+          <td>{resultado.data.NOMBRE}</td>
+        </tr>
+        <tr>
+          <th scope="row">Apellido</th>
+          <td>{resultado.data.APELLIDO}</td>
+        </tr>
+        <tr>
+          <th scope="row">Sucursal Bancaria</th>
+          <td>
+            {!resultado.data.BEN_COD_SUC ? (
+              "Sucursal No Asignada"
+            ) : (
+              <>
+                {resultado.data.BEN_COD_SUC} - {resultado.data.BEN_SUCURSAL}
+              </>
+            )}
+          </td>
+        </tr>
+      </tbody>
+    </table> : null}
     </div>
   );
 };
