@@ -21,7 +21,6 @@ const FormConsulta = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     setAlerta(null);
-    setResultado({ data: null, consultado: false });
 
     const recaptchaValue = recaptchaRef.current.getValue();
 
@@ -43,8 +42,7 @@ const FormConsulta = () => {
   };
 
   const buscar = async (micuil) => {
-
-    let data = null;
+    setResultado({ data: null, consultado: false });
     const db = firebase.database();
     const ref = db.ref("/");
 
@@ -54,7 +52,7 @@ const FormConsulta = () => {
       .once("value")
       .then((snapshot) => {
         if (snapshot.val()) {
-          data = snapshot.val();
+          const data = snapshot.val();
           const key = Object.keys(snapshot.val())[0];
           setResultado({ data: data[key], consultado: true });
         } else {
