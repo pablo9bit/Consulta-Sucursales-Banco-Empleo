@@ -5,7 +5,6 @@ import useAlerta from "../hooks/useAlerta";
 
 const FormConsulta = () => {
   const [resultado, setResultado] = useState({ data: null, consultado: false });
-  const [loadingLocal, setLoadingLocal] = useState(null);
   const [setAlerta, MostrarAlerta] = useAlerta(null);
   const [DatosForm, LeerForm] = useState({ cuil: "" });
   const { cuil } = DatosForm;
@@ -25,7 +24,6 @@ const FormConsulta = () => {
     setResultado({ data: null, consultado: false });
 
     const recaptchaValue = recaptchaRef.current.getValue();
-    //console.log(recaptchaValue);
 
     if (recaptchaValue) {
       if (cuil.trim().length !== 11) {
@@ -34,39 +32,32 @@ const FormConsulta = () => {
           class: "danger",
         });
       } else {
-        consultar(cuil);
+        buscar(cuil);
       }
     } else {
       setAlerta({
         msg: "Debe validar reCAPTCHA",
         class: "danger",
       });
-      //return;
     }
   };
 
-  const consultar = async (micuil) => {
-    setResultado({ data: null, consultado: false });
+  const buscar = async (micuil) => {
 
-    setLoadingLocal(true);
-
+    let data = null;
     const db = firebase.database();
     const ref = db.ref("/");
 
-    //console.log(cuil);
     ref
       .orderByChild("CUIL")
       .equalTo(micuil)
       .once("value")
       .then((snapshot) => {
-
         if (snapshot.val()) {
-          setAlerta(null);
-          console.log("salida", snapshot.val());
-          const data = snapshot.val();
-          setResultado({ data, consultado: true });
+          data = snapshot.val();
+          const key = Object.keys(snapshot.val())[0];
+          setResultado({ data: data[key], consultado: true });
         } else {
-          console.log("no hay datos");
           setAlerta({
             msg: "No se encontraron resultados.",
             class: "danger",
@@ -74,7 +65,6 @@ const FormConsulta = () => {
         }
       });
 
-    setLoadingLocal(false);
   };
 
   return (
@@ -114,40 +104,41 @@ const FormConsulta = () => {
             consultar
           </button>
         </div>
-
       </form>
       <MostrarAlerta />
-      {resultado.data ? <table
-      className="table table-striped "
-      style={{ margin: "auto", width: "600px" }}
-    >
-      <tbody>
-        <tr>
-          <th scope="row">CUIT</th>
-          <td>{resultado.data.CUIL}</td>
-        </tr>
-        <tr>
-          <th scope="row">Nombre</th>
-          <td>{resultado.data.NOMBRE}</td>
-        </tr>
-        <tr>
-          <th scope="row">Apellido</th>
-          <td>{resultado.data.APELLIDO}</td>
-        </tr>
-        <tr>
-          <th scope="row">Sucursal Bancaria</th>
-          <td>
-            {!resultado.data.BEN_COD_SUC ? (
-              "Sucursal No Asignada"
-            ) : (
-              <>
-                {resultado.data.BEN_COD_SUC} - {resultado.data.BEN_SUCURSAL}
-              </>
-            )}
-          </td>
-        </tr>
-      </tbody>
-    </table> : null}
+      {resultado.data ? (
+        <table
+          className="table table-striped "
+          style={{ margin: "auto", width: "600px" }}
+        >
+          <tbody>
+            <tr>
+              <th scope="row">CUIT</th>
+              <td>{resultado.data.CUIL}</td>
+            </tr>
+            <tr>
+              <th scope="row">Nombre</th>
+              <td>{resultado.data.NOMBRE}</td>
+            </tr>
+            <tr>
+              <th scope="row">Apellido</th>
+              <td>{resultado.data.APELLIDO}</td>
+            </tr>
+            <tr>
+              <th scope="row">Sucursal Bancaria</th>
+              <td>
+                {!resultado.data.BEN_COD_SUC ? (
+                  "Sucursal No Asignada"
+                ) : (
+                  <>
+                    {resultado.data.BEN_COD_SUC} - {resultado.data.BEN_SUCURSAL}
+                  </>
+                )}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      ) : null}
     </div>
   );
 };
