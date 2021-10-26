@@ -62,7 +62,6 @@ const FormConsulta = () => {
           });
         }
       });
-
   };
 
   return (
@@ -134,6 +133,12 @@ const FormConsulta = () => {
                 )}
               </td>
             </tr>
+            {resultado.data.CUIT !== "11-11111111-1" ? (
+                <tr>
+                  <th scope="row">Empresa Donde Realizar la Práctica</th>
+                  <td>CUIT: {resultado.data.CUIT} - {resultado.data.N_EMPRESA}</td>
+                </tr>
+            ) : null}
           </tbody>
         </table>
       ) : null}
