@@ -135,7 +135,7 @@ const FormConsulta = () => {
             </tr>
             {resultado.data.CUIT !== "11-11111111-1" ? (
                 <tr>
-                  <th scope="row">Empresa Donde Realizar la Práctica</th>
+                  <th scope="row">La práctica labora la deberá realizar en la empresa:</th>
                   <td>CUIT: {resultado.data.CUIT} - {resultado.data.N_EMPRESA}</td>
                 </tr>
             ) : null}
