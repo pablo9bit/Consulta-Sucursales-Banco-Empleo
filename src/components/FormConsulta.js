@@ -69,7 +69,7 @@ const FormConsulta = () => {
       <img src="header_banco_gente.png" width="100%" alt="bancodelagente" />
       <br></br>
       <div className="text-center p-1">
-        <b>CONSULTA DE SUCURSAL BANCARIA ASIGNADA</b>
+        <b>CONSULTA PARA PERSONAS BENEFICIARIAS DEL PPP</b>
       </div>
       <form onSubmit={onSubmit} style={{ margin: "30px" }}>
         <div style={{ display: "flex", justifyContent: "center" }}>
@@ -135,7 +135,7 @@ const FormConsulta = () => {
             </tr>
             {resultado.data.CUIT !== "11-11111111-1" ? (
                 <tr>
-                  <th scope="row">La práctica labora la deberá realizar en la empresa:</th>
+                  <th scope="row">La práctica laboral la deberá realizar en la empresa:</th>
                   <td>CUIT: {resultado.data.CUIT} - {resultado.data.N_EMPRESA}</td>
                 </tr>
             ) : null}
