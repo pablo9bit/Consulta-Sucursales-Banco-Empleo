@@ -64,6 +64,18 @@ const FormConsulta = () => {
       });
   };
 
+  const sucursalBcaria = () => {
+    if (!resultado.data.BEN_COD_SUC && !resultado.data.APO_COD_SUC) {
+      return "Sucursal No Asignada";
+    }
+    if (resultado.data.BEN_COD_SUC && !resultado.data.APO_COD_SUC) {
+      return resultado.data.BEN_COD_SUC + " - " + resultado.data.BEN_SUCURSAL;
+    }
+    if (!resultado.data.BEN_COD_SUC && resultado.data.APO_COD_SUC) {
+      return resultado.data.APO_COD_SUC + " - " + resultado.data.APO_SUCURSAL;
+    }
+  };
+
   return (
     <div>
       <img src="header_banco_gente.png" width="100%" alt="bancodelagente" />
@@ -123,21 +135,24 @@ const FormConsulta = () => {
             </tr>
             <tr>
               <th scope="row">Sucursal Bancaria</th>
-              <td>
-                {!resultado.data.BEN_COD_SUC ? (
-                  "Sucursal No Asignada"
-                ) : (
-                  <>
-                    {resultado.data.BEN_COD_SUC} - {resultado.data.BEN_SUCURSAL}
-                  </>
-                )}
-              </td>
+              <td>{sucursalBcaria()}</td>
             </tr>
             {resultado.data.CUIT !== "11-11111111-1" ? (
+              <>
                 <tr>
                   <th scope="row">Empresa Donde Realizar la Práctica</th>
-                  <td>CUIT: {resultado.data.CUIT} - {resultado.data.N_EMPRESA}</td>
+                  <td>
+                    CUIT: {resultado.data.CUIT} - {resultado.data.N_EMPRESA}
+                  </td>
                 </tr>
+
+                {resultado.data.ID_FICHA ? (
+                  <tr>
+                    <th scope="row">Fecha Inicio Práctica</th>
+                    <td>{resultado.data.FECHA_INICIO}</td>
+                  </tr>
+                ) : null}
+              </>
             ) : null}
           </tbody>
         </table>
