@@ -76,6 +76,14 @@ const FormConsulta = () => {
     }
   };
 
+  const fechaInicio = () => {
+    return new Intl.DateTimeFormat("es-AR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(resultado.data.FECHA_INICIO); // 01/11/2021
+  };
+
   return (
     <div>
       <img src="header_banco_gente.png" width="100%" alt="bancodelagente" />
@@ -149,7 +157,7 @@ const FormConsulta = () => {
                 {resultado.data.ID_FICHA ? (
                   <tr>
                     <th scope="row">Fecha Inicio Práctica</th>
-                    <td>{resultado.data.FECHA_INICIO}</td>
+                    <td>{fechaInicio()}</td>
                   </tr>
                 ) : null}
               </>
