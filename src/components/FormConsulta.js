@@ -78,13 +78,10 @@ const FormConsulta = () => {
   };
 
   const fechaInicio = () => {
-    /*  return new Intl.DateTimeFormat("es-AR", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    }).format(resultado.data.FECHA_INICIO); // 01/11/2021 */
+    let date = new Date(resultado.data.FECHA_INICIO);
+    date.setDate(date.getDate() + 1);
 
-    return (resultado.data.FECHA_INICIO);
+    return date.toLocaleDateString("es-AR");
   };
 
   return (
