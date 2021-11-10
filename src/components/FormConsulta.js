@@ -1,6 +1,7 @@
 import { useState, createRef } from "react";
 import firebase from "../config/firebase";
 import ReCAPTCHA from "react-google-recaptcha";
+
 import useAlerta from "../hooks/useAlerta";
 
 const FormConsulta = () => {
@@ -77,11 +78,13 @@ const FormConsulta = () => {
   };
 
   const fechaInicio = () => {
-    return new Intl.DateTimeFormat("es-AR", {
+    /*  return new Intl.DateTimeFormat("es-AR", {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
-    }).format(resultado.data.FECHA_INICIO); // 01/11/2021
+    }).format(resultado.data.FECHA_INICIO); // 01/11/2021 */
+
+    return (resultado.data.FECHA_INICIO);
   };
 
   return (
